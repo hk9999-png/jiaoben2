@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# 1. 杀死已知木马进程并清理重生脚本
-pkill -9 kswpad
-pkill -9 systemd-kworkerd
-pkill -9 .mod
-chattr -i /etc/crontab /.mod /usr/lib/systemd/systemd-kworkerd 2>/dev/null
-rm -f /.mod /usr/lib/systemd/systemd-kworkerd
-# 彻底从系统级 crontab 中删除每分钟运行的 .mod
-sed -i '/\.mod/d' /etc/crontab
-crontab -r
-
 # 2. 删除除 root 以外的所有普通用户 (UID >= 1000)
 # 这会确保只有 root 这一个入口
 for user in $(awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd); do
